@@ -75,7 +75,7 @@ export function FileExplorer() {
   const fullPath = "/sdcard/" + path.join("/");
 
   const upload = (files: FileList | File[]) => {
-    if (!phone.online) return toast.error(`${phone.name} está apagado`);
+    if (!phone.online) { toast.error(`${phone.name} está apagado`); return; }
     const arr = Array.from(files);
     const target = [...path];
     setUploading(arr.map((f) => ({ name: f.name, p: 0 })));
