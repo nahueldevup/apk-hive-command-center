@@ -43,7 +43,7 @@ export function FileExplorer() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const phone = PHONES.find((p) => p.id === phoneId)!;
-  const fs = fsByPhone[phoneId];
+  const fs = fsByPhone[phoneId]!;
 
   const resolve = (tree: Record<string, FsEntry[]>, p: string[]) => {
     let list = tree[p[0]] ?? [];
@@ -178,7 +178,7 @@ export function FileExplorer() {
                   active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-surface-2 hover:text-foreground")}>
                 <Ico className="size-4" />
                 <span className="flex-1 text-left">{r}</span>
-                <span className="font-mono text-[10px]">{fs[r].length}</span>
+                <span className="font-mono text-[10px]">{(fs[r]?.length ?? 0)}</span>
               </button>
             );
           })}
@@ -243,7 +243,7 @@ export function FileExplorer() {
             <Loader2 className="size-3.5 animate-spin text-primary" />
             <span className="flex-1 truncate font-mono">Subiendo {uploading.map((u) => u.name).join(", ")} → {fullPath}</span>
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-muted">
-              <div className="stripe-progress h-full transition-all" style={{ width: `${uploading[0].p}%` }} />
+              <div className="stripe-progress h-full transition-all" style={{ width: `${uploading[0]?.p ?? 0}%` }} />
             </div>
           </div>
         )}
