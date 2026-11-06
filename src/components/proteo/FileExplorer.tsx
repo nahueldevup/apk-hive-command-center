@@ -30,7 +30,7 @@ export function FileExplorer() {
   const [fsByPhone, setFsByPhone] = useState<Record<string, Record<string, FsEntry[]>>>(() =>
     Object.fromEntries(PHONES.map((p) => [p.id, makeFs()])),
   );
-  const [phoneId, setPhoneId] = useState(PHONES[0].id);
+  const [phoneId, setPhoneId] = useState(PHONES[0]!.id);
   const [path, setPath] = useState<string[]>(["Download"]);
   const [view, setView] = useState<"list" | "grid">("list");
   const [query, setQuery] = useState("");
@@ -46,7 +46,7 @@ export function FileExplorer() {
   const fs = fsByPhone[phoneId]!;
 
   const resolve = (tree: Record<string, FsEntry[]>, p: string[]) => {
-    let list = tree[p[0]] ?? [];
+    let list = tree[p[0]!] ?? [];
     for (const seg of p.slice(1)) list = list.find((e) => e.dir && e.name === seg)?.children ?? [];
     return list;
   };
@@ -57,10 +57,10 @@ export function FileExplorer() {
 
   const mutateDir = (pid: string, p: string[], fn: (l: FsEntry[]) => FsEntry[]) =>
     setFsByPhone((all) => {
-      const tree = structuredClone(all[pid]);
-      if (p.length === 1) tree[p[0]] = fn(tree[p[0]]);
+      const tree = structuredClone(all[pid]!);
+      if (p.length === 1) tree[p[0]!] = fn(tree[p[0]!] ?? []);
       else {
-        let list = tree[p[0]];
+        let list = tree[p[0]!]!;
         for (const seg of p.slice(1, -1)) list = list.find((e) => e.name === seg)!.children!;
         const dir = list.find((e) => e.name === p[p.length - 1])!;
         dir.children = fn(dir.children ?? []);
