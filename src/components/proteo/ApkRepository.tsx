@@ -37,7 +37,7 @@ export function ApkRepository() {
   const [apks, setApks] = useState<Apk[]>(APKS);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
-  const [selectedId, setSelectedId] = useState<string>(APKS[0].id);
+  const [selectedId, setSelectedId] = useState<string>(APKS[0]!.id);
   const [targets, setTargets] = useState<string[]>([]);
   const [jobs, setJobs] = useState<Record<string, JobState>>({});
   const [installing, setInstalling] = useState(false);

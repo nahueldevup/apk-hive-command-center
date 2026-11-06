@@ -8,10 +8,10 @@ export type Apk = {
   code: string;
   size: number;
   type: "apk" | "bundle";
-  format?: "apkm" | "xapk" | "apks" | "zip";
-  splits?: string[];
-  abi?: string;
-  obbIgnored?: boolean;
+  format?: "apkm" | "xapk" | "apks" | "zip" | undefined;
+  splits?: string[] | undefined;
+  abi?: string | undefined;
+  obbIgnored?: boolean | undefined;
   isDefault: boolean;
   added: string;
   sha: string;

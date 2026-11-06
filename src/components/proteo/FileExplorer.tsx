@@ -30,7 +30,7 @@ export function FileExplorer() {
   const [fsByPhone, setFsByPhone] = useState<Record<string, Record<string, FsEntry[]>>>(() =>
     Object.fromEntries(PHONES.map((p) => [p.id, makeFs()])),
   );
-  const [phoneId, setPhoneId] = useState(PHONES[0].id);
+  const [phoneId, setPhoneId] = useState(PHONES[0]!.id);
   const [path, setPath] = useState<string[]>(["Download"]);
   const [view, setView] = useState<"list" | "grid">("list");
   const [query, setQuery] = useState("");
@@ -43,10 +43,10 @@ export function FileExplorer() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const phone = PHONES.find((p) => p.id === phoneId)!;
-  const fs = fsByPhone[phoneId];
+  const fs = fsByPhone[phoneId]!;
 
   const resolve = (tree: Record<string, FsEntry[]>, p: string[]) => {
-    let list = tree[p[0]] ?? [];
+    let list = tree[p[0]!] ?? [];
     for (const seg of p.slice(1)) list = list.find((e) => e.dir && e.name === seg)?.children ?? [];
     return list;
   };
@@ -57,10 +57,10 @@ export function FileExplorer() {
 
   const mutateDir = (pid: string, p: string[], fn: (l: FsEntry[]) => FsEntry[]) =>
     setFsByPhone((all) => {
-      const tree = structuredClone(all[pid]);
-      if (p.length === 1) tree[p[0]] = fn(tree[p[0]]);
+      const tree = structuredClone(all[pid]!);
+      if (p.length === 1) tree[p[0]!] = fn(tree[p[0]!] ?? []);
       else {
-        let list = tree[p[0]];
+        let list = tree[p[0]!]!;
         for (const seg of p.slice(1, -1)) list = list.find((e) => e.name === seg)!.children!;
         const dir = list.find((e) => e.name === p[p.length - 1])!;
         dir.children = fn(dir.children ?? []);
@@ -75,7 +75,7 @@ export function FileExplorer() {
   const fullPath = "/sdcard/" + path.join("/");
 
   const upload = (files: FileList | File[]) => {
-    if (!phone.online) return toast.error(`${phone.name} está apagado`);
+    if (!phone.online) { toast.error(`${phone.name} está apagado`); return; }
     const arr = Array.from(files);
     const target = [...path];
     setUploading(arr.map((f) => ({ name: f.name, p: 0 })));
@@ -178,7 +178,7 @@ export function FileExplorer() {
                   active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-surface-2 hover:text-foreground")}>
                 <Ico className="size-4" />
                 <span className="flex-1 text-left">{r}</span>
-                <span className="font-mono text-[10px]">{fs[r].length}</span>
+                <span className="font-mono text-[10px]">{(fs[r]?.length ?? 0)}</span>
               </button>
             );
           })}
@@ -243,7 +243,7 @@ export function FileExplorer() {
             <Loader2 className="size-3.5 animate-spin text-primary" />
             <span className="flex-1 truncate font-mono">Subiendo {uploading.map((u) => u.name).join(", ")} → {fullPath}</span>
             <div className="h-1.5 w-40 overflow-hidden rounded-full bg-muted">
-              <div className="stripe-progress h-full transition-all" style={{ width: `${uploading[0].p}%` }} />
+              <div className="stripe-progress h-full transition-all" style={{ width: `${uploading[0]?.p ?? 0}%` }} />
             </div>
           </div>
         )}
