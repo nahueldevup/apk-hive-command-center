@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Location, LocationGroup } from '@/lib/locations';
 
-export default function LocationMap({ locations, groups, selected, onSelect, onPick, fitKey }: { locations: Location[]; groups: LocationGroup[]; selected: Location | null; onSelect: (id: string) => void; onPick: (lat: number, lng: number) => void; fitKey: number }) {
+export default function LocationMap({ locations, groups, selected, onSelect, onPick, fitKey, centerKey }: { locations: Location[]; groups: LocationGroup[]; selected: Location | null; onSelect: (id: string) => void; onPick: (lat: number, lng: number) => void; fitKey: number; centerKey: number }) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
@@ -33,7 +33,7 @@ export default function LocationMap({ locations, groups, selected, onSelect, onP
       marker.bindTooltip(label, { direction: 'top', offset: [0, -30] }).on('click', () => callbacks.current.onSelect(l.id)).addTo(layer);
     });
   }, [locations, groups, selected?.id]);
-  useEffect(() => { if (selected) mapRef.current?.flyTo([selected.latitude, selected.longitude], 13, { duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.6 }); }, [selected?.id, selected?.latitude, selected?.longitude]);
+  useEffect(() => { if (selected) mapRef.current?.flyTo([selected.latitude, selected.longitude], 13, { duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.6 }); }, [selected?.id, selected?.latitude, selected?.longitude, centerKey]);
   useEffect(() => { if (fitKey && locations.length) mapRef.current?.fitBounds(L.latLngBounds(locations.map(l => [l.latitude, l.longitude])), { padding: [55, 55], maxZoom: 13 }); }, [fitKey]);
   return <div ref={container} className="location-map h-full w-full" aria-label="Mapa interactivo de ubicaciones" />;
 }

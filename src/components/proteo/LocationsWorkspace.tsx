@@ -25,6 +25,7 @@ export function LocationsWorkspace() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [fitKey, setFitKey] = useState(0);
+  const [centerKey, setCenterKey] = useState(0);
   const [draft, setDraft] = useState<Location | null>(null);
   const [draftDefault, setDraftDefault] = useState(false);
   const [error, setError] = useState('');
@@ -102,12 +103,12 @@ export function LocationsWorkspace() {
         <div className="border-t border-border px-4 py-3 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5 text-warning"><Star className="size-3" />Predeterminada</span><span className="mt-1 block truncate text-foreground">{locations.find(l => l.id === defaultId)?.name ?? 'Sin ubicación predeterminada'}</span></div>
       </aside>
 
-      <section className={cn('relative min-w-0 flex-1 flex-col lg:flex', mobileView === 'map' ? 'flex' : 'hidden')}>
+      <section className={cn('relative isolate min-w-0 flex-1 flex-col lg:flex', mobileView === 'map' ? 'flex' : 'hidden')}>
         <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-3 text-xs"><span className="flex min-w-0 items-center gap-1.5 truncate text-muted-foreground"><Globe2 className="size-3.5 shrink-0 text-primary" />OpenStreetMap<ChevronRight className="size-3" /><span className="truncate text-foreground">{selected?.city ?? 'Mapa mundial'}</span></span><Button size="sm" variant="ghost" className="h-7 px-2 text-muted-foreground" onClick={() => setFitKey(k => k + 1)} title="Ver todas las ubicaciones"><LocateFixed />Ver todas</Button></div>
         <div className="relative min-h-56 flex-1 overflow-hidden bg-surface-2">
-          <ClientOnly fallback={<MapLoading />}><Suspense fallback={<MapLoading />}><LocationMap locations={visible} groups={groups} selected={selected} onSelect={select} onPick={(lat, lng) => openDraft(emptyLocation(lat, lng))} fitKey={fitKey} /></Suspense></ClientOnly>
+          <ClientOnly fallback={<MapLoading />}><Suspense fallback={<MapLoading />}><LocationMap locations={visible} groups={groups} selected={selected} onSelect={select} onPick={(lat, lng) => openDraft(emptyLocation(lat, lng))} fitKey={fitKey} centerKey={centerKey} /></Suspense></ClientOnly>
           {selected && <div className="pointer-events-none absolute left-3 right-14 top-3 z-[500] flex max-w-sm items-center gap-3 rounded-md border border-border bg-background/95 px-3 py-2.5 shadow-pop"><span className="grid size-8 shrink-0 place-items-center rounded-md bg-primary/10 text-primary"><Crosshair className="size-4" /></span><div className="min-w-0"><p className="truncate text-xs font-medium">{selected.name}</p><p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{coords(selected)}</p></div><span className="ml-auto shrink-0 text-[10px] text-success">GPS</span></div>}
-          <Button variant="secondary" size="sm" className="absolute bottom-7 left-3 z-[500] border border-border shadow-pop" onClick={() => selected && setFitKey(0) === undefined && select(selected.id)} aria-label="Centrar ubicación seleccionada"><Crosshair /> <span>Centro GPS</span></Button>
+          <Button variant="secondary" size="sm" className="absolute bottom-7 left-3 z-[500] border border-border shadow-pop" disabled={!selected} onClick={() => setCenterKey(k => k + 1)} aria-label="Centrar ubicación seleccionada"><Crosshair /> <span>Centro GPS</span></Button>
         </div>
         <div className="border-t border-border bg-surface px-3 py-3"><div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground"><span className="flex items-center gap-1.5"><Pin className="size-3" />Accesos rápidos</span><span>{pinned.length} fijadas</span></div><div className="flex gap-2 overflow-x-auto pb-1">{pinned.map(l => <Button key={l.id} variant="outline" size="sm" className={cn('shrink-0 bg-background text-[11px]', l.id === selectedId && 'border-primary/40 bg-primary/10 text-primary')} onClick={() => select(l.id)}><MapPin className="size-3" />{l.name}{defaultId === l.id && <Star className="size-3 text-warning" />}</Button>)}{!pinned.length && <span className="py-1 text-xs text-muted-foreground">No hay accesos rápidos fijados.</span>}</div></div>
       </section>
