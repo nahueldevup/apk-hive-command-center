@@ -103,7 +103,7 @@ export function LocationsWorkspace() {
         <div className="border-t border-border px-4 py-3 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5 text-warning"><Star className="size-3" />Predeterminada</span><span className="mt-1 block truncate text-foreground">{locations.find(l => l.id === defaultId)?.name ?? 'Sin ubicación predeterminada'}</span></div>
       </aside>
 
-      <section className={cn('relative min-w-0 flex-1 flex-col lg:flex', mobileView === 'map' ? 'flex' : 'hidden')}>
+      <section className={cn('relative isolate min-w-0 flex-1 flex-col lg:flex', mobileView === 'map' ? 'flex' : 'hidden')}>
         <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-border px-3 text-xs"><span className="flex min-w-0 items-center gap-1.5 truncate text-muted-foreground"><Globe2 className="size-3.5 shrink-0 text-primary" />OpenStreetMap<ChevronRight className="size-3" /><span className="truncate text-foreground">{selected?.city ?? 'Mapa mundial'}</span></span><Button size="sm" variant="ghost" className="h-7 px-2 text-muted-foreground" onClick={() => setFitKey(k => k + 1)} title="Ver todas las ubicaciones"><LocateFixed />Ver todas</Button></div>
         <div className="relative min-h-56 flex-1 overflow-hidden bg-surface-2">
           <ClientOnly fallback={<MapLoading />}><Suspense fallback={<MapLoading />}><LocationMap locations={visible} groups={groups} selected={selected} onSelect={select} onPick={(lat, lng) => openDraft(emptyLocation(lat, lng))} fitKey={fitKey} centerKey={centerKey} /></Suspense></ClientOnly>
